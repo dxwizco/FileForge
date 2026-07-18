@@ -1,0 +1,24 @@
+# FileForge Example Definition
+
+# Styles
+
+TestProject/styles/main.css  # Main application stylesheet
+
+# Public
+
+TestProject/public/index.html
+
+# Platform Contracts
+
+TestProject/platform/contracts/runtime.css
+TestProject/platform/contracts/runtime.html
+TestProject/platform/contracts/runtime.js
+TestProject/platform/contracts/runtime.json
+TestProject/platform/contracts/runtime.py
+TestProject/platform/contracts/runtime.sql
+TestProject/platform/contracts/runtime.ts
+TestProject/platform/contracts/runtime.tsx
+
+# Components
+
+TestProject/components/Button.tsx

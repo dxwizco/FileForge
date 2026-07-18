@@ -14,13 +14,14 @@ Define your structure once, reuse it whenever you start a new project.
 
 ## ✨ Features
 
+- ⚡ No installation required — simply run the PowerShell script
 - 📁 Generate folders and files from simple definition files
-- 🧩 Support multiple project profiles
-- 🎨 Apply reusable templates based on file extensions
-- 📝 Automatically add file path headers
-- 🛡 Protect existing work by skipping files with content
+- 🧩 Support multiple reusable project profiles
+- 🎨 Apply templates automatically based on file extensions
+- 📝 Automatically add file path headers to generated files
+- 🛡 Protect existing work by skipping files that already contain content
 - 🚫 Never overwrite existing files by default
-- 📊 Provide a detailed creation summary:
+- 📊 Display a detailed creation summary:
   - Total files
   - Created files
   - Skipped files
@@ -165,26 +166,47 @@ FileForge
 
 File definitions describe the structure you want to create.
 
-They are stored inside:
+They are stored inside: `files/`
 
-```
-files/
-```
-
-Example:
-
-```
-files/angular-app.txt
-```
+Example: `files/example.txt`
 
 Content:
 
+## Example Definition
+
+The following example demonstrates:
+
+- Full-line comments
+- Inline comments
+- Nested folders
+- Multiple file types
+- Automatic template selection
+
 ```text
-src/app/app.component.ts
-src/app/app.component.html
-src/styles/main.css
-package.json
-README.md
+# FileForge Example Definition
+
+# Styles
+
+TestProject/styles/main.css  # Main application stylesheet
+
+# Public
+
+TestProject/public/index.html
+
+# Platform Contracts
+
+TestProject/platform/contracts/runtime.css
+TestProject/platform/contracts/runtime.html
+TestProject/platform/contracts/runtime.js
+TestProject/platform/contracts/runtime.json
+TestProject/platform/contracts/runtime.py
+TestProject/platform/contracts/runtime.sql
+TestProject/platform/contracts/runtime.ts
+TestProject/platform/contracts/runtime.tsx
+
+# Components
+
+TestProject/components/Button.tsx
 ```
 
 Each line represents one folder or file path.
@@ -198,7 +220,7 @@ File definitions support comments using `#`.
 ### Full-line comment
 
 ```text
-# React application structure
+# FileForge Example Definition
 
 src/App.tsx
 ```
@@ -304,25 +326,15 @@ Example:
 
 ```
 ⚠️ No -Target specified.
-
 Files will be created here:
-
 D:\Tools\FileForge
 
 Continue? (Y/N):
 ```
 
-Choosing:
+Choosing: n
 
-```
-N
-```
-
-results in:
-
-```
-❌ Cancelled.
-```
+results in: ❌ Cancelled.
 
 ---
 
@@ -418,6 +430,71 @@ Included examples:
 
 ---
 
+# 🚀 Example
+
+## Example Definition File
+
+```text
+# FileForge Example Definition
+
+# Styles
+
+TestProject/styles/main.css  # Main application stylesheet
+
+# Public
+
+TestProject/public/index.html
+
+# Platform Contracts
+
+TestProject/platform/contracts/runtime.css
+TestProject/platform/contracts/runtime.html
+TestProject/platform/contracts/runtime.js
+TestProject/platform/contracts/runtime.json
+TestProject/platform/contracts/runtime.py
+TestProject/platform/contracts/runtime.sql
+TestProject/platform/contracts/runtime.ts
+TestProject/platform/contracts/runtime.tsx
+
+# Components
+
+TestProject/components/Button.tsx
+```
+
+## 📸 Example Results
+
+### ✅ Scenario 1 — New Project
+
+If none of the folders or files exist, FileForge creates the complete project structure.
+
+![Full Generation](assets/images/full-generation.png)
+
+### ✅ Scenario 2 — Existing Project
+
+If some files already exist and contain content, FileForge skips those files while creating only the missing folders and files.
+
+![Partial Generation](assets/images/partial-generation.png)
+
+### ✅ Scenario 3 — No Changes Required
+
+If every file already exists and contains content, FileForge completes without modifying the project.
+
+![No Changes Required](assets/images/no-changes.png)
+
+### Generated Project Structure
+
+FileForge creates the requested folders and files while preserving the directory structure defined in the file.
+
+![Generated Project Structure](assets/images/generated-folder-tree.png)
+
+### Generated File Header
+
+When templates are used, FileForge can automatically include the generated file path as a header to help identify the file's intended location.
+
+![Generated File Header](assets/images/file-header-example.png)
+
+---
+
 # 🗺 Roadmap
 
 Possible future improvements:
@@ -437,13 +514,17 @@ Contributions are welcome.
 
 If you improve FileForge, add templates, fix bugs, or suggest features, please consider opening an issue or pull request.
 
-See:
+See [CONTRIBUTING](CONTRIBUTING.md) for contribution guidelines.
 
-```
-CONTRIBUTING.md
-```
+---
 
-for contribution guidelines.
+## 🏢 About
+
+FileForge is an open-source project created and maintained by **DXWIZ**.
+
+Learn more about DXWIZ at **[dxwiz.com](https://dxwiz.com)**.
+
+For questions or support, visit our [Contact page](https://dxwiz.com/contact).
 
 ---
 
@@ -451,13 +532,7 @@ for contribution guidelines.
 
 FileForge is licensed under the MIT License.
 
-See:
-
-```
-LICENSE
-```
-
-for details.
+See the [LICENSE](LICENSE) file for details.
 
 ---
 
@@ -475,3 +550,5 @@ FileForge turns those repeated steps into reusable definitions.
 Define once.
 
 Generate anytime.
+
+---
