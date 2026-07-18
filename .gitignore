@@ -1,0 +1,85 @@
+# ==========================
+
+# FileForge Generated Output
+
+# ==========================
+
+# Test projects generated while testing FileForge
+
+TestProject/
+TestProjects/
+Generated/
+Output/
+Build/
+
+# Temporary generated files
+
+*.tmp
+*.temp
+*.log
+
+# ==========================
+
+# PowerShell
+
+# ==========================
+
+# PowerShell transcripts
+
+*.txt~
+
+# PowerShell history
+
+PSReadLine/
+
+# ==========================
+
+# Operating System Files
+
+# ==========================
+
+# Windows
+
+Thumbs.db
+Desktop.ini
+
+# macOS
+
+.DS_Store
+
+# ==========================
+
+# Editors
+
+# ==========================
+
+# Visual Studio Code
+
+.vscode/
+
+# JetBrains IDEs
+
+.idea/
+
+# ==========================
+
+# Backup Files
+
+# ==========================
+
+*.bak
+*.backup
+*~
+
+# ==========================
+
+# Environment / Local Files
+
+# ==========================
+
+.env
+.env.*
+
+# Local configuration files
+
+*.local
