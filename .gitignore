@@ -83,3 +83,9 @@ Desktop.ini
 # Local configuration files
 
 *.local
+
+
+# Exlude DX file
+
+**/dx-*
+FileForge/files/dx-*
