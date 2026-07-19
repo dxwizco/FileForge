@@ -109,37 +109,6 @@ foreach ($relativeFile in $files) {
 
     try {
 
-        # If the entry ends with / or \, treat it as a directory
-        if ($relativeFile -match '[\\/]$') {
-
-            $folderPath = Join-Path `
-                $Target `
-                ($relativeFile.TrimEnd('\','/'))
-
-            if (!(Test-Path $folderPath)) {
-
-                New-Item `
-                    -ItemType Directory `
-                    -Path $folderPath `
-                    -Force `
-                    -ErrorAction Stop | Out-Null
-
-                Write-Host "📁 Created folder: $folderPath" -ForegroundColor Green
-
-                $createdCount++
-            }
-            else {
-
-                Write-Host "➡️ Folder exists: $folderPath" -ForegroundColor Yellow
-
-                $skippedCount++
-            }
-
-            continue
-        }
-
-        # === end of folder adding ===
-
 
         $filePath = Join-Path `
             $Target `
@@ -169,63 +138,61 @@ foreach ($relativeFile in $files) {
         }
 
 
-# # Delete start
-#         # Check existing file
-#         if (Test-Path $filePath -PathType Leaf) {
-#             $existing = Get-Content `
-#                 $filePath `
-#                 -Raw `
-#                 -ErrorAction Stop
-#         }
-#         else {
-#             $existing = ""
-#         }
 
-#         # Add template only if empty
-#         if ([string]::IsNullOrWhiteSpace($existing)) {
-#             $content = Get-Template `
-#                 $relativeFile
-#             Set-Content `
-#                 -Path $filePath `
-#                 -Value $content `
-#                 -ErrorAction Stop
-#             Write-Host `
-#                 "✏️ Added template: $filePath" `
-#                 -ForegroundColor Green
-#             $createdCount++
-#         }
-#         else {
-#             Write-Host `
-#                 "➡️ Skipped (has content): $filePath" `
-#                 -ForegroundColor Yellow
-#             $skippedCount++
-#         }
-# # Delete end
-
-#   PASSED: Put this clean replacement here instead:
-        # Check if the file already exists on disk
+        # Check existing file
         if (Test-Path $filePath -PathType Leaf) {
-            Write-Host `
-                "➡️ Skipped (already exists): $filePath" `
-                -ForegroundColor Yellow
-            
-            $skippedCount++
-            continue # This instantly moves to the next file, skipping the creation below
+
+
+            $existing = Get-Content `
+                $filePath `
+                -Raw `
+                -ErrorAction Stop
+
+        }
+        else {
+
+            $existing = ""
+
         }
 
-        # If it doesn't exist, build the template and create it
-        $content = Get-Template $relativeFile
 
-        Set-Content `
-            -Path $filePath `
-            -Value $content `
-            -ErrorAction Stop
 
-        Write-Host `
-            "✏️ Added template: $filePath" `
-            -ForegroundColor Green
+        # Add template only if empty
+        if ([string]::IsNullOrWhiteSpace($existing)) {
 
-        $createdCount++
+
+            $content = Get-Template `
+                $relativeFile
+
+
+
+            Set-Content `
+                -Path $filePath `
+                -Value $content `
+                -ErrorAction Stop
+
+
+
+            Write-Host `
+                "✏️ Added template: $filePath" `
+                -ForegroundColor Green
+
+
+            $createdCount++
+
+        }
+        else {
+
+
+            Write-Host `
+                "➡️ Skipped (has content): $filePath" `
+                -ForegroundColor Yellow
+
+
+            $skippedCount++
+
+        }
+
 
     }
     catch {

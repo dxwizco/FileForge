@@ -4,21 +4,49 @@
 
 TestProject/styles/main.css  # Main application stylesheet
 
+# Folder Example
+
+TestProject/testfolder/
+TestProject/test-folder/
+
 # Public
 
 TestProject/public/index.html
 
 # Platform Contracts
 
-TestProject/platform/contracts/runtime.css
-TestProject/platform/contracts/runtime.html
-TestProject/platform/contracts/runtime.js
-TestProject/platform/contracts/runtime.json
-TestProject/platform/contracts/runtime.py
-TestProject/platform/contracts/runtime.sql
-TestProject/platform/contracts/runtime.ts
-TestProject/platform/contracts/runtime.tsx
+TestProject/platform/file-type.ts
+TestProject/platform/file-type.tsx
+TestProject/platform/file-type.js
+TestProject/platform/file-type.jsx
+TestProject/platform/file-type.css
+TestProject/platform/file-type.scss
+TestProject/platform/file-type.html
+TestProject/platform/file-type.py
+TestProject/platform/file-type.sql
+TestProject/platform/file-type.json
+TestProject/platform/file-type.ps1
+TestProject/platform/file-type.sh
+TestProject/platform/file-type.yml
+TestProject/platform/file-type.yaml
+TestProject/platform/file-type.env
+TestProject/platform/file-type.md
+TestProject/platform/file-type.cs
+TestProject/platform/file-type.go
+TestProject/platform/file-type.rs
+TestProject/platform/file-type.vue
+
 
 # Components
 
 TestProject/components/Button.tsx
+
+TestProject/README.md
+TestProject/Dockerfile
+TestProject/Dockerfile.backend
+TestProject/Dockerfile.frontend
+TestProject/compose.yaml
+TestProject/compose.dev.yaml
+
+TestProject/.gitignore
+TestProject/.dockerignore

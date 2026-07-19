@@ -552,3 +552,9 @@ Define once.
 Generate anytime.
 
 ---
+
+To run in wsl2:
+
+```bash
+pwsh ./FileForge/FileForge.ps1 -File example -Target .
+```
