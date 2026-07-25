@@ -1,45 +1,43 @@
 # FileForge Example Definition
 
-# Styles
+
+
+TestProject/app/testfolder/
+TestProject/app/test-folder/
+
+TestProject/app/[dynamic-route]/page.tsx
+TestProject/app/(group)/page.tsx
 
 TestProject/styles/main.css  # Main application stylesheet
-
-# Folder Example
-
-TestProject/testfolder/
-TestProject/test-folder/
-TestProject/app/[locale]/page.tsx
 
 # Public
 
 TestProject/public/index.html
 
-# Platform Contracts
+# 🖼️ Templat Outputs
 
-TestProject/platform/file-type.ts
-TestProject/platform/file-type.tsx
-TestProject/platform/file-type.js
-TestProject/platform/file-type.jsx
-TestProject/platform/file-type.css
-TestProject/platform/file-type.scss
-TestProject/platform/file-type.html
-TestProject/platform/file-type.py
-TestProject/platform/file-type.sql
-TestProject/platform/file-type.json
-TestProject/platform/file-type.ps1
-TestProject/platform/file-type.sh
-TestProject/platform/file-type.yml
-TestProject/platform/file-type.yaml
-TestProject/platform/file-type.env
-TestProject/platform/file-type.md
-TestProject/platform/file-type.cs
-TestProject/platform/file-type.go
-TestProject/platform/file-type.rs
-TestProject/platform/file-type.vue
-
+TestProject/template-utputs/file-type.ts
+TestProject/template-utputs/file-type.tsx
+TestProject/template-utputs/file-type.js
+TestProject/template-utputs/file-type.jsx
+TestProject/template-utputs/file-type.css
+TestProject/template-utputs/file-type.scss
+TestProject/template-utputs/file-type.html
+TestProject/template-utputs/file-type.py
+TestProject/template-utputs/file-type.sql
+TestProject/template-utputs/file-type.json
+TestProject/template-utputs/file-type.ps1
+TestProject/template-utputs/file-type.sh
+TestProject/template-utputs/file-type.yml
+TestProject/template-utputs/file-type.yaml
+TestProject/template-utputs/file-type.env
+TestProject/template-utputs/file-type.md
+TestProject/template-utputs/file-type.cs
+TestProject/template-utputs/file-type.go
+TestProject/template-utputs/file-type.rs
+TestProject/template-utputs/file-type.vue
 
 # Components
-
 TestProject/components/Button.tsx
 
 TestProject/README.md

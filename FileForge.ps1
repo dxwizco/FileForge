@@ -1,4 +1,5 @@
-# FileForge.ps1
+# # FileForge.ps1
+
 
 param(
     [Parameter(Mandatory=$false)]
@@ -36,8 +37,8 @@ if ([string]::IsNullOrWhiteSpace($Target)) {
 
 }
 else {
-
-    if (!(Test-Path $Target)) {
+    # FIX: Use -LiteralPath here to safely detect brackets
+    if (!(Test-Path -LiteralPath $Target)) {
 
         New-Item `
             -ItemType Directory `
@@ -56,7 +57,8 @@ else {
 $fileListPath = Join-Path $PSScriptRoot "files\$File.txt"
 
 
-if (!(Test-Path $fileListPath)) {
+# FIX: Use -LiteralPath for template list verification
+if (!(Test-Path -LiteralPath $fileListPath)) {
 
     Write-Host "❌ File list not found: $fileListPath" -ForegroundColor Red
     exit
@@ -73,7 +75,7 @@ Write-Host ""
 
 
 # Read file list
-$files = Get-Content $fileListPath |
+$files = Get-Content -LiteralPath $fileListPath | # FIX: Added -LiteralPath here
     ForEach-Object {
 
         # Remove inline comments
@@ -116,7 +118,8 @@ foreach ($relativeFile in $files) {
                 $Target `
                 ($relativeFile.TrimEnd('\','/'))
 
-            if (!(Test-Path $folderPath)) {
+            # FIX: Use -LiteralPath for structural directories
+            if (!(Test-Path -LiteralPath $folderPath)) {
 
                 New-Item `
                     -ItemType Directory `
@@ -154,7 +157,8 @@ foreach ($relativeFile in $files) {
 
 
         # Create directory
-        if (!(Test-Path $directory)) {
+        # FIX: Use -LiteralPath when creating nested directories for files
+        if (!(Test-Path -LiteralPath $directory)) {
 
 
             New-Item `
@@ -169,42 +173,9 @@ foreach ($relativeFile in $files) {
         }
 
 
-# # Delete start
-#         # Check existing file
-#         if (Test-Path $filePath -PathType Leaf) {
-#             $existing = Get-Content `
-#                 $filePath `
-#                 -Raw `
-#                 -ErrorAction Stop
-#         }
-#         else {
-#             $existing = ""
-#         }
-
-#         # Add template only if empty
-#         if ([string]::IsNullOrWhiteSpace($existing)) {
-#             $content = Get-Template `
-#                 $relativeFile
-#             Set-Content `
-#                 -Path $filePath `
-#                 -Value $content `
-#                 -ErrorAction Stop
-#             Write-Host `
-#                 "✏️ Added template: $filePath" `
-#                 -ForegroundColor Green
-#             $createdCount++
-#         }
-#         else {
-#             Write-Host `
-#                 "➡️ Skipped (has content): $filePath" `
-#                 -ForegroundColor Yellow
-#             $skippedCount++
-#         }
-# # Delete end
-
-#   PASSED: Put this clean replacement here instead:
         # Check if the file already exists on disk
-        if (Test-Path $filePath -PathType Leaf) {
+        # FIX: Changed -Path to -LiteralPath to avoid bracket wildcard mismatch
+        if (Test-Path -LiteralPath $filePath -PathType Leaf) {
             Write-Host `
                 "➡️ Skipped (already exists): $filePath" `
                 -ForegroundColor Yellow
@@ -216,8 +187,9 @@ foreach ($relativeFile in $files) {
         # If it doesn't exist, build the template and create it
         $content = Get-Template $relativeFile
 
+        # FIX: Changed -Path to -LiteralPath to let it write filenames with brackets correctly
         Set-Content `
-            -Path $filePath `
+            -LiteralPath $filePath `
             -Value $content `
             -ErrorAction Stop
 
@@ -257,3 +229,4 @@ Write-Host "Created: $createdCount" -ForegroundColor Green
 Write-Host "Skipped: $skippedCount" -ForegroundColor Yellow
 Write-Host "Failed:  $failedCount" -ForegroundColor Red
 Write-Host "==========================="
+
