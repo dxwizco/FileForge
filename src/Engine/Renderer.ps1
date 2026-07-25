@@ -2,7 +2,7 @@
 
 
 # ==========================
-# Working tree with lines but not sorted
+# Working tree with sorted display
 # ==========================
 
 function Show-ForgeTree {
@@ -12,7 +12,7 @@ function Show-ForgeTree {
         $Nodes,
 
         [Parameter(Mandatory=$false)]
-        [switch]$Apply
+        [switch]$Run
     )
 
 
@@ -43,18 +43,59 @@ function Show-ForgeTree {
         }
 
 
-        if ($Node.IsFolder) {
+# DX Commented for getting updated icons
+        # if ($Node.IsFolder) {
 
-            Write-Host "$line📁 $($Node.Name)" `
-                -ForegroundColor Green
+        #     Write-Host "$line📁 $($Node.Name)" `
+        #         -ForegroundColor Green
 
-        }
-        else {
+        # }
+        # else {
 
-            Write-Host "$line✏️ $($Node.Name)" `
-                -ForegroundColor Cyan
+        #     Write-Host "$line✏️ $($Node.Name)" `
+        #         -ForegroundColor Cyan
 
-        }
+        # }
+
+switch ($Node.Action) {
+
+    "folder" {
+
+        Write-Host "$line📁 $($Node.Name)" `
+            -ForegroundColor Green
+
+    }
+
+    "create" {
+
+        Write-Host "$line✨ $($Node.Name)" `
+            -ForegroundColor Green
+
+    }
+
+    "update" {
+
+        Write-Host "$line♻️ $($Node.Name)" `
+            -ForegroundColor Yellow
+
+    }
+
+    "skip" {
+
+        Write-Host "$line⏭️ $($Node.Name)" `
+            -ForegroundColor DarkYellow
+
+    }
+
+    default {
+
+        Write-Host "$line$($Node.Name)" `
+            -ForegroundColor Cyan
+
+    }
+
+}
+
 
 
 $parentPath = ($Node.RelativePath -replace '\\','/').TrimEnd('/')
@@ -155,4 +196,65 @@ function Get-ForgePlanStats {
 
 
     return $stats
+}
+
+
+# ==========================
+# Detailed action list
+# ==========================
+
+function Show-ForgeActions {
+
+    param(
+        [Parameter(Mandatory)]
+        [ForgeNode[]]$Nodes,
+
+        [switch]$Execution
+    )
+
+    if ($Execution) {
+
+        Write-Host "Executed Actions" -ForegroundColor Cyan
+        Write-Host "==================" -ForegroundColor Cyan
+
+    }
+    else {
+
+        Write-Host "Preview Actions" -ForegroundColor Cyan
+        Write-Host "================" -ForegroundColor Cyan
+
+    }
+
+    # Write-Host "Planned Actions" -ForegroundColor Cyan
+    # Write-Host "================" -ForegroundColor Cyan
+
+
+    foreach ($node in ($Nodes | Sort-Object RelativePath)) {
+
+        if ($node.IsFolder) {
+            continue
+        }
+
+
+        switch ($node.Action) {
+
+            "create" {
+                Write-Host "✨ Created: $($node.RelativePath)" `
+                    -ForegroundColor Green
+            }
+
+            "update" {
+                Write-Host "♻️ Updated: $($node.RelativePath)" `
+                    -ForegroundColor Yellow
+            }
+
+            "skip" {
+                Write-Host "⏭️ Skipped: $($node.RelativePath)" `
+                    -ForegroundColor DarkYellow
+            }
+
+        }
+
+    }
+
 }

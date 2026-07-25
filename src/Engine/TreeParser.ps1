@@ -138,7 +138,8 @@ function Convert-ToForgeTree {
                 $relative,
                 $fullPath,
                 $isFolder,
-                $depth + $i
+                $depth + $i,
+                "none"
             )
 
 

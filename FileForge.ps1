@@ -7,10 +7,13 @@ param(
     [string]$File = "test",
 
     [Parameter(Mandatory=$false)]
-    [switch]$Apply,
+    [switch]$Run,
 
     [Parameter(Mandatory=$false)]
-    [switch]$Force
+    [switch]$Force,
+
+    [Parameter(Mandatory=$false)]
+    [switch]$ShowActions
 
 )
 
@@ -37,6 +40,7 @@ $Source = Join-Path $Root "src"
 . (Join-Path $Source "Engine/MarkdownParser.ps1")
 . (Join-Path $Source "Engine/TreeParser.ps1")
 . (Join-Path $Source "Engine/Validator.ps1")
+. (Join-Path $Source "Engine/Planner.ps1")
 . (Join-Path $Source "Engine/Renderer.ps1")
 . (Join-Path $Source "Engine/Executor.ps1")
 
@@ -114,7 +118,13 @@ if (!$validation.Valid) {
     exit 1
 }
 
+foreach ($node in $tree) {
 
+    $node.Action = Get-ForgeAction `
+        -Node $node `
+        -Force:$Force
+
+}
 
 foreach ($warning in $validation.Warnings) {
 
@@ -130,9 +140,9 @@ Write-Host ""
 $planStats = Get-ForgePlanStats -Nodes $tree
 
 
-if ($Apply) {
+if ($Run) {
 
-    Write-Host "MODE: APPLY" -ForegroundColor Green
+    Write-Host "Mode: EXECUTION" -ForegroundColor Green
 
     $stats = Invoke-ForgeCreation `
         -Nodes $tree `
@@ -141,7 +151,7 @@ if ($Apply) {
 }
 else {
 
-    Write-Host "MODE: DRY RUN" -ForegroundColor Yellow
+    Write-Host "MODE: PREVIEW" -ForegroundColor Yellow
 
 }
 
@@ -149,8 +159,18 @@ else {
 Write-Host ""
 
 Show-ForgeTree `
-    -Nodes $tree `
-    -Apply:$Apply
+    -Nodes $tree
+    # -Apply:$Run
+
+if ($ShowActions) {
+
+    Write-Host ""
+
+    Show-ForgeActions `
+        -Nodes $tree `
+        -Execution:$Run
+
+}
 
 
 Write-Host ""
@@ -162,9 +182,9 @@ Write-Host "=========================" -ForegroundColor Cyan
 Write-Host ""
 
 
-if ($Apply) {
+if ($Run) {
 
-    Write-Host "Mode: APPLY" -ForegroundColor Green
+    Write-Host "MODE: EXECUTION" -ForegroundColor Green
 
     Write-Host ""
 
@@ -176,7 +196,7 @@ if ($Apply) {
 }
 else {
 
-    Write-Host "Mode: DRY RUN" -ForegroundColor Yellow
+    Write-Host "Mode: PREVIEW" -ForegroundColor Yellow
 
     Write-Host ""
 
