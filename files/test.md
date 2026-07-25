@@ -24,6 +24,9 @@ pwsh ./FileForge.ps1 -File test -Target ./xxx -Run -Force
 
 # EXECUTION + FORCE: Replace files and show executed actions
 pwsh ./FileForge.ps1 -File test -Target ./xxx -Run -Force -ShowActions
+
+# List available definitions:
+pwsh ./FileForge.ps1 -List
 ```
 
 ---
@@ -108,6 +111,11 @@ Windows PowerShell:
 | `-Run`         | Execute file creation operations and skip existing files |
 | `-ShowActions` | Show detailed create/update/skip actions                 |
 | `-Force`       | Replace existing files during execution                  |
+| `-ShowActions` | Show detailed create/update/skip actions                 |
+| `-Force`       | Replace existing files during execution                  |
+| `-List`        | List available FileForge definition files                |
+| `-Help`        | Show this help                                           |
+| `-Version`     | Show FileForge version                                   |
 
 ---
 
@@ -117,25 +125,14 @@ FileForge reads only fenced blocks marked with the language identifier `fileforg
 
 The `fileforge` fence tells FileForge which section contains the project definition.
 
-The definition block must use indentation to represent folders and files.
+The definition block uses indentation to represent folders and files.
 
-Use spaces for indentation (recommended) or tabs.
+Rules:
 
-Use:
-
-```fileforge
-Project/
-    src/
-        main.ps1
-```
-
-Do not use:
-
-```text
-Project/
-    src/
-        main.ps1
-```
+1. Use spaces for indentation (recommended) or tabs.
+2. Use the FileForge fence identifier `fileforge` for the project definition block.
+3. Do not use other fence identifiers such as `text`, `bash`, `powershell`, or an empty fence for the definition block.
+4. Only the first `fileforge` block in the file is considered as the project definition.
 
 ---
 

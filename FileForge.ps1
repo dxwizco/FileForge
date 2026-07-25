@@ -13,15 +13,121 @@ param(
     [switch]$Force,
 
     [Parameter(Mandatory=$false)]
-    [switch]$ShowActions
+    [switch]$ShowActions,
+
+    [Parameter(Mandatory=$false)]
+    [switch]$Help,
+
+    [Parameter(Mandatory=$false)]
+    [switch]$Version,
+
+    [Parameter(Mandatory=$false)]
+    [switch]$List
 
 )
 
 
 $Root = $PSScriptRoot
+$FileForgeVersion = "2.0.0"
 
 $Source = Join-Path $Root "src"
 
+if ($Version) {
+
+    Write-Host ""
+    Write-Host "FileForge v$FileForgeVersion" -ForegroundColor Cyan
+    Write-Host ""
+    exit 0
+
+}
+
+if ($List) {
+
+    Write-Host ""
+    Write-Host "Available FileForge Definitions" -ForegroundColor Cyan
+    Write-Host "==============================="
+
+    $definitionPath = Join-Path $Root "files"
+
+    if (!(Test-Path $definitionPath)) {
+
+        Write-Host ""
+        Write-Host "No definition folder found." -ForegroundColor Yellow
+        exit 0
+
+    }
+
+    $definitions = Get-ChildItem `
+        -Path $definitionPath |
+        Where-Object {
+            $_.Extension -ieq ".md"
+        } |
+        Sort-Object Name
+
+    Write-Host ""
+
+    foreach ($definition in $definitions) {
+        Write-Host "  $($definition.BaseName)"
+    }
+
+    Write-Host ""
+
+    exit 0
+
+}
+
+
+if ($Help) {
+
+    Write-Host ""
+
+    Write-Host "FileForge v$FileForgeVersion" -ForegroundColor Cyan
+    Write-Host "============================"
+
+    Write-Host ""
+
+    Write-Host "Usage:"
+    Write-Host "  pwsh ./FileForge.ps1 -File <name> -Target <path> [options]"
+
+    Write-Host ""
+
+    Write-Host "Modes:"
+    Write-Host "  (default)      PREVIEW only"
+    Write-Host "  -Run           EXECUTION mode"
+
+    Write-Host ""
+
+    Write-Host "Options:"
+    Write-Host "  -ShowActions   Show detailed create/update/skip actions"
+    Write-Host "  -Force         Replace existing files during execution"
+    Write-Host "  -List          List available FileForge definition files"
+    Write-Host "  -Help          Show this help"
+    Write-Host "  -Version       Show FileForge version"
+
+    Write-Host ""
+
+    Write-Host "Examples:"
+
+    Write-Host ""
+    Write-Host "List available definitions:"
+    Write-Host "  pwsh ./FileForge.ps1 -List"
+    Write-Host ""
+    
+    Write-Host "Preview:"
+    Write-Host "  pwsh ./FileForge.ps1 -File test -Target ./App"
+    Write-Host ""
+
+    Write-Host "Execute:"
+    Write-Host "  pwsh ./FileForge.ps1 -File test -Target ./App -Run"
+    Write-Host ""
+
+    Write-Host "Execute with force:"
+    Write-Host "  pwsh ./FileForge.ps1 -File test -Target ./App -Run -Force"
+    Write-Host ""
+
+    exit 0
+
+}
 
 
 #

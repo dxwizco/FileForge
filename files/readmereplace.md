@@ -12,7 +12,7 @@ Define your project structure once, store it as a reusable definition, and gener
 
 ---
 
-## ✨ Features
+# ✨ Features
 
 - ⚡ No installation required — run directly using PowerShell
 - 📁 Generate folders and files from Markdown definitions
@@ -38,7 +38,6 @@ Define your project structure once, store it as a reusable definition, and gener
 - PowerShell 7+
 
 Check your version:
-Use PowerShell core (`pwsh`) in Linux and macOS.
 
 ```powershell
 $PSVersionTable.PSVersion
@@ -270,14 +269,12 @@ Windows PowerShell:
 
 ---
 
-## Parameters
+# Parameters
 
 | Parameter | Description                                         |
 | --------- | --------------------------------------------------- |
 | `-File`   | Selects the definition file from the `files` folder |
-| `-File`   | defaults to `test` if not specified                 |
 | `-Target` | Defines where the generated project will be created |
-| `-Target` | defaults to the current directory if not specified  |
 
 Example:
 
@@ -291,18 +288,18 @@ uses:
 files/test.md
 ```
 
-## Available Options
+---
 
-| Option         | Description                                              |
-| -------------- | -------------------------------------------------------- |
-| `-Run`         | Execute file creation operations and skip existing files |
-| `-ShowActions` | Show detailed create/update/skip actions                 |
-| `-Force`       | Replace existing files during execution                  |
-| `-ShowActions` | Show detailed create/update/skip actions                 |
-| `-Force`       | Replace existing files during execution                  |
-| `-List`        | List available FileForge definition files                |
-| `-Help`        | Show this help                                           |
-| `-Version`     | Show FileForge version                                   |
+# Options
+
+| Option         | Description                              |
+| -------------- | ---------------------------------------- |
+| `-Run`         | Execute file creation/update operations  |
+| `-ShowActions` | Show detailed create/update/skip actions |
+| `-Force`       | Replace existing files during execution  |
+| `-Help`        | Show FileForge help                      |
+| `-Version`     | Show FileForge version                   |
+| `-List`        | List available definitions               |
 
 ---
 
@@ -427,42 +424,20 @@ Example:
 
 # 🎨 Templates
 
-Templates are automatically selected based on file extension.
+FileForge selects templates based on file extensions.
 
-Supported templates:
+Examples:
 
-| Extension | Template / Purpose         |
-| --------- | -------------------------- |
-| `.cs`     | C# Starter                 |
-| `.css`    | CSS Starter                |
-| `.env`    | Environment Variables      |
-| `.go`     | Go Starter                 |
-| `.html`   | HTML Starter               |
-| `.js`     | JavaScript Starter         |
-| `.json`   | JSON Starter               |
-| `.jsx`    | React JavaScript Component |
-| `.md`     | Markdown Document          |
-| `.ps1`    | PowerShell Script Starter  |
-| `.py`     | Python Starter             |
-| `.rs`     | Rust Starter               |
-| `.scss`   | SCSS Starter               |
-| `.sh`     | Shell Script Starter       |
-| `.sql`    | SQL Script Starter         |
-| `.ts`     | TypeScript Starter         |
-| `.tsx`    | React TypeScript Component |
-| `.vue`    | Vue Component Starter      |
-| `.yaml`   | YAML Configuration         |
-| `.yml`    | YAML Configuration         |
-
-| File Name             | Template / Purpose                       |
-| --------------------- | ---------------------------------------- |
-| `Dockerfile`          | Docker Container Definition              |
-| `Dockerfile.backend`  | Backend Docker Definition                |
-| `Dockerfile.frontend` | Frontend Docker Definition               |
-| `compose.yaml`        | Docker Compose Configuration             |
-| `compose.dev.yaml`    | Docker Compose Development Configuration |
-| `.dockerignore`       | Docker Ignore Rules                      |
-| `.gitignore`          | Git Ignore Rules                         |
+| Extension | Generated Content       |
+| --------- | ----------------------- |
+| `.ts`     | TypeScript starter      |
+| `.tsx`    | React component starter |
+| `.js`     | JavaScript starter      |
+| `.css`    | CSS starter             |
+| `.html`   | HTML starter            |
+| `.json`   | JSON starter            |
+| `.py`     | Python starter          |
+| `.sql`    | SQL starter             |
 
 Example:
 
@@ -484,150 +459,31 @@ as a file path header.
 
 ---
 
-# 🛡 Safety Behavior
+# 📂 Project Structure
 
-FileForge is designed to protect existing projects.
-
-## Existing Files
-
-If a file already exists and contains content:
+Example FileForge installation:
 
 ```
-➡️ Skipped (has content)
+FileForge
+│
+├── files
+│   ├── test.md
+│   └── todo.md
+│
+├── templates
+│
+├── src
+│   └── Engine
+│       ├── Models.ps1
+│       ├── TreeParser.ps1
+│       ├── Renderer.ps1
+│       ├── Executor.ps1
+│       └── Validator.ps1
+│
+├── FileForge.ps1
+├── README.md
+└── LICENSE
 ```
-
-The file remains unchanged.
-
----
-
-## New Files
-
-If a file does not exist:
-
-```
-✏️ Added template:
-
-D:\Projects\App\src\Component.tsx
-```
-
-The file is created using the matching template.
-
----
-
-# 📊 Summary Example
-
-After completion:
-
-```
-===== FileForge Summary =====
-Total:   13
-Created: 9
-Skipped: 4
-Failed:  0
-=============================
-```
-
----
-
-# 🚀 Example
-
-## Example Definition File
-
-The following block describes the generated project tree:
-
-```fileforge
-# This is full line comment
-TestProject/    # First root folder
-    app/
-        testfolder/
-        test-folder/
-        # Special folders
-        [dynamic-route]/
-            page.tsx
-        /(group)/
-            page.tsx
-
-        styles/
-            main.css  # This is inline comment
-
-    # Single line folder + file path
-    public/index.html
-
-    # Components
-    components/Button.tsx
-
-    README.md
-    infra/
-        Dockerfile
-        Dockerfile.backend
-        Dockerfile.frontend
-        compose.yaml
-        compose.dev.yaml
-    README.md   # Duplicate file example
-    .gitignore
-    .dockerignore
-
-# Root level file
-textfile.md
-
-# 🖼️ Second root folder with emoji support
-TestOutputs/
-    template-outputs/
-        file-type.ts
-        file-type.tsx
-        file-type.js
-        file-type.jsx
-        file-type.css
-        file-type.scss
-        file-type.html
-        file-type.py
-        file-type.sql
-        file-type.json
-        file-type.ps1
-        file-type.sh
-        file-type.yml
-        file-type.yaml
-        file-type.env
-        file-type.md
-        file-type.cs
-        file-type.go
-        file-type.rs
-        file-type.vue
-```
-
----
-
-## 📸 Example Results
-
-### ✅ Scenario 1 — New Project
-
-If none of the folders or files exist, FileForge creates the complete project structure.
-
-![Full Generation](assets/images/full-generation.png)
-
-### ✅ Scenario 2 — Existing Project
-
-If some files already exist and contain content, FileForge skips those files while creating only the missing folders and files.
-
-![Partial Generation](assets/images/partial-generation.png)
-
-### ✅ Scenario 3 — No Changes Required
-
-If every file already exists and contains content, FileForge completes without modifying the project.
-
-![No Changes Required](assets/images/no-changes.png)
-
-### Generated Project Structure
-
-FileForge creates the requested folders and files while preserving the directory structure defined in the file.
-
-![Generated Project Structure](assets/images/generated-folder-tree.png)
-
-### Generated File Header
-
-When templates are used, FileForge can automatically include the generated file path as a header to help identify the file's intended location.
-
-![Generated File Header](assets/images/file-header-example.png)
 
 ---
 
@@ -648,19 +504,13 @@ Possible future improvements:
 
 Contributions are welcome.
 
-If you improve FileForge, add templates, fix bugs, or suggest features, please consider opening an issue or pull request.
-
-See [CONTRIBUTING](CONTRIBUTING.md) for contribution guidelines.
+If you improve FileForge, add templates, fix bugs, or suggest features, consider opening an issue or pull request.
 
 ---
 
-## 🏢 About
+# 🏢 About
 
 FileForge is an open-source project created and maintained by **DXWIZ**.
-
-Learn more about DXWIZ at **[dxwiz.com](https://dxwiz.com)**.
-
-For questions or support, visit our [Contact page](https://dxwiz.com/contact).
 
 ---
 
@@ -668,23 +518,21 @@ For questions or support, visit our [Contact page](https://dxwiz.com/contact).
 
 FileForge is licensed under the MIT License.
 
-See the [LICENSE](LICENSE) file for details.
+See the `LICENSE` file for details.
 
 ---
 
 # ⭐ Why FileForge?
 
-Many projects begin with the same repetitive setup tasks:
+Many projects begin with repetitive setup tasks:
 
 - Creating folders
 - Adding standard files
 - Preparing starter templates
 - Maintaining consistent structures
 
-FileForge turns those repeated steps into reusable definitions.
+FileForge converts those repeated steps into reusable definitions.
 
 Define once.
 
 Generate anytime.
-
----
