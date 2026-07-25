@@ -8,6 +8,7 @@ TestProject/styles/main.css  # Main application stylesheet
 
 TestProject/testfolder/
 TestProject/test-folder/
+TestProject/app/[locale]/page.tsx
 
 # Public
 
