@@ -1,3 +1,5 @@
+# Validator.ps1: Checks duplicate paths
+
 function Test-ForgeTree {
 
     param(
@@ -13,9 +15,11 @@ function Test-ForgeTree {
     #
     # Duplicate physical paths
     #
-    $duplicates = $Nodes |
-        Group-Object -Property FullPath |
-        Where-Object { $_.Count -gt 1 }
+    $duplicates = @(
+        $Nodes |
+            Group-Object -Property FullPath |
+            Where-Object { $_.Count -gt 1 }
+    )
 
 
     foreach ($item in $duplicates) {
@@ -63,8 +67,9 @@ function Test-ForgeTree {
 
 
     return @{
-        Errors   = $errors.ToArray()
-        Warnings = $warnings.ToArray()
-        Valid    = ($errors.Count -eq 0)
-    }
+    Errors          = $errors.ToArray()
+    Warnings        = $warnings.ToArray()
+    DuplicateCount  = $duplicates.Count
+    Valid           = ($errors.Count -eq 0)
+}
 }

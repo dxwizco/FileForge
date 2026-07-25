@@ -1,10 +1,16 @@
 param(
 
+    [Parameter(Mandatory=$false)]
     [string]$Target = ".",
 
+    [Parameter(Mandatory=$false)]
     [string]$File = "test",
 
-    [switch]$Apply
+    [Parameter(Mandatory=$false)]
+    [switch]$Apply,
+
+    [Parameter(Mandatory=$false)]
+    [switch]$Force
 
 )
 
@@ -89,6 +95,7 @@ $tree = Convert-ToForgeTree `
     -Target $Target
 
 $validation = Test-ForgeTree -Nodes $tree
+$duplicateCount = $validation.DuplicateCount
 
 
 if (!$validation.Valid) {
@@ -119,12 +126,17 @@ Write-Host ""
 
 
 
+# Calculate planned structure statistics (works for both modes)
+$planStats = Get-ForgePlanStats -Nodes $tree
+
+
 if ($Apply) {
 
     Write-Host "MODE: APPLY" -ForegroundColor Green
 
-    Invoke-ForgeCreation `
-        -Nodes $tree
+    $stats = Invoke-ForgeCreation `
+        -Nodes $tree `
+        -Force:$Force
 
 }
 else {
@@ -134,9 +146,47 @@ else {
 }
 
 
-
 Write-Host ""
 
 Show-ForgeTree `
     -Nodes $tree `
     -Apply:$Apply
+
+
+Write-Host ""
+
+Write-Host "=========================" -ForegroundColor Cyan
+Write-Host " FileForge Summary" -ForegroundColor Cyan
+Write-Host "=========================" -ForegroundColor Cyan
+
+Write-Host ""
+
+
+if ($Apply) {
+
+    Write-Host "Mode: APPLY" -ForegroundColor Green
+
+    Write-Host ""
+
+    Write-Host "Folders created: $($stats.Folders)" -ForegroundColor Green
+    Write-Host "Files created:   $($stats.Created)" -ForegroundColor Green
+    Write-Host "Files updated:   $($stats.Updated)" -ForegroundColor Yellow
+    Write-Host "Files skipped:   $($stats.Skipped)" -ForegroundColor DarkYellow
+
+}
+else {
+
+    Write-Host "Mode: DRY RUN" -ForegroundColor Yellow
+
+    Write-Host ""
+
+    Write-Host "Folders planned: $($planStats.Folders)" -ForegroundColor Green
+    Write-Host "Files planned:   $($planStats.Files)" -ForegroundColor Green
+
+}
+
+Write-Host "Duplicates found:  $duplicateCount" -ForegroundColor Red
+
+Write-Host ""
+
+Write-Host "=========================" -ForegroundColor Cyan

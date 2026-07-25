@@ -39,7 +39,7 @@ textfile.md # This is direct file at root
 
 # 🖼️ Templat Outputs: Second root folder
 TestOutputs/
-    template-utputs/
+    template-outputs/
         file-type.ts
         file-type.tsx
         file-type.js

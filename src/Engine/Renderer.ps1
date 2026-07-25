@@ -1,3 +1,5 @@
+# Renderer.ps1: Displays preview
+
 function Show-ForgeTree {
 
     param(
@@ -35,4 +37,34 @@ function Show-ForgeTree {
 
     }
 
+}
+
+
+function Get-ForgePlanStats {
+
+    param(
+        [Parameter(Mandatory)]
+        [ForgeNode[]]$Nodes
+    )
+
+
+    $stats = @{
+        Folders = 0
+        Files   = 0
+    }
+
+
+    foreach ($node in $Nodes) {
+
+        if ($node.IsFolder) {
+            $stats.Folders++
+        }
+        else {
+            $stats.Files++
+        }
+
+    }
+
+
+    return $stats
 }

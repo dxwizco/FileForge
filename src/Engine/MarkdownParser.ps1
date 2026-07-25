@@ -1,3 +1,5 @@
+# MarkdownParser.ps1: Reads fenced fileforge block
+
 function Get-FileForgeBlock {
 
     param(

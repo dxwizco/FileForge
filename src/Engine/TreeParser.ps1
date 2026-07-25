@@ -1,3 +1,5 @@
+# TreeParser.ps1: Creates ForgeNode[]
+
 function Convert-ToForgeTree {
 
     param(
