@@ -2,37 +2,37 @@ function Show-ForgeTree {
 
     param(
         [Parameter(Mandatory)]
-        [ForgeNode[]]$Nodes,
+        $Nodes,
 
+        [Parameter(Mandatory=$false)]
         [switch]$Apply
     )
 
 
     foreach ($node in $Nodes) {
 
-        $indent = "    " * $node.Depth
+        $indent = ""
+
+        if ($node.Depth -gt 0) {
+            $indent = "    " * $node.Depth
+        }
 
 
         if ($node.IsFolder) {
 
-            if ($Apply) {
-                Write-Host "$indent📁 Created: $($node.Name)" -ForegroundColor Green
-            }
-            else {
-                Write-Host "$indent📁 $($node.Name)" -ForegroundColor Green
-            }
+            Write-Host (
+                "$indent📁 $($node.Name)"
+            ) -ForegroundColor Green
 
         }
         else {
 
-            if ($Apply) {
-                Write-Host "$indent✏️ Created: $($node.Name)" -ForegroundColor Cyan
-            }
-            else {
-                Write-Host "$indent✏️ $($node.Name)" -ForegroundColor Cyan
-            }
+            Write-Host (
+                "$indent✏️ $($node.Name)"
+            ) -ForegroundColor Cyan
 
         }
 
     }
+
 }

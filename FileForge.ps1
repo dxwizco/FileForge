@@ -30,6 +30,7 @@ $Source = Join-Path $Root "src"
 . (Join-Path $Source "Engine/Models.ps1")
 . (Join-Path $Source "Engine/MarkdownParser.ps1")
 . (Join-Path $Source "Engine/TreeParser.ps1")
+. (Join-Path $Source "Engine/Validator.ps1")
 . (Join-Path $Source "Engine/Renderer.ps1")
 . (Join-Path $Source "Engine/Executor.ps1")
 
@@ -87,7 +88,32 @@ $tree = Convert-ToForgeTree `
     -Lines $lines `
     -Target $Target
 
+$validation = Test-ForgeTree -Nodes $tree
 
+
+if (!$validation.Valid) {
+
+    Write-Host ""
+    Write-Host "❌ Validation failed" -ForegroundColor Red
+
+
+    foreach ($error in $validation.Errors) {
+
+        Write-Host "   $error" -ForegroundColor DarkRed
+
+    }
+
+
+    exit 1
+}
+
+
+
+foreach ($warning in $validation.Warnings) {
+
+    Write-Host "⚠️ $warning" -ForegroundColor Yellow
+
+}
 
 Write-Host ""
 
