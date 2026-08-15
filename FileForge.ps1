@@ -76,7 +76,6 @@ if ($List) {
 
 }
 
-
 if ($Help) {
 
     Write-Host ""
@@ -87,7 +86,14 @@ if ($Help) {
     Write-Host ""
 
     Write-Host "Usage:"
-    Write-Host "  pwsh ./FileForge.ps1 -File <name> -Target <path> [options]"
+
+    Write-Host ""
+    Write-Host "  Linux / macOS / WSL:"
+    Write-Host "    pwsh ./FileForge.ps1 -File <name> -Target <path> [options]"
+
+    Write-Host ""
+    Write-Host "  Windows PowerShell:"
+    Write-Host "    .\FileForge.ps1 -File <name> -Target <path> [options]"
 
     Write-Host ""
 
@@ -109,26 +115,80 @@ if ($Help) {
     Write-Host "Examples:"
 
     Write-Host ""
+
     Write-Host "List available definitions:"
-    Write-Host "  pwsh ./FileForge.ps1 -List"
+
+    Write-Host "  Linux / macOS / WSL:"
+    Write-Host "    pwsh ./FileForge.ps1 -List"
+
+    Write-Host "  Windows PowerShell:"
+    Write-Host "    .\FileForge.ps1 -List"
+
     Write-Host ""
-    
+
     Write-Host "Preview:"
-    Write-Host "  pwsh ./FileForge.ps1 -File test -Target ./App"
+
+    Write-Host "  Linux / macOS / WSL:"
+    Write-Host "    pwsh ./FileForge.ps1 -File test -Target ./App"
+
+    Write-Host "  Windows PowerShell:"
+    Write-Host "    .\FileForge.ps1 -File test -Target `".\App`""
+
+    Write-Host ""
+
+    Write-Host "Preview with actions:"
+
+    Write-Host "  Linux / macOS / WSL:"
+    Write-Host "    pwsh ./FileForge.ps1 -File test -Target ./App -ShowActions"
+
+    Write-Host "  Windows PowerShell:"
+    Write-Host "    .\FileForge.ps1 -File test -Target `".\App`" -ShowActions"
+
     Write-Host ""
 
     Write-Host "Execute:"
-    Write-Host "  pwsh ./FileForge.ps1 -File test -Target ./App -Run"
+
+    Write-Host "  Linux / macOS / WSL:"
+    Write-Host "    pwsh ./FileForge.ps1 -File test -Target ./App -Run"
+
+    Write-Host "  Windows PowerShell:"
+    Write-Host "    .\FileForge.ps1 -File test -Target `".\App`" -Run"
+
+    Write-Host ""
+
+    Write-Host "Execute with actions:"
+
+    Write-Host "  Linux / macOS / WSL:"
+    Write-Host "    pwsh ./FileForge.ps1 -File test -Target ./App -Run -ShowActions"
+
+    Write-Host "  Windows PowerShell:"
+    Write-Host "    .\FileForge.ps1 -File test -Target `".\App`" -Run -ShowActions"
+
     Write-Host ""
 
     Write-Host "Execute with force:"
-    Write-Host "  pwsh ./FileForge.ps1 -File test -Target ./App -Run -Force"
+
+    Write-Host "  Linux / macOS / WSL:"
+    Write-Host "    pwsh ./FileForge.ps1 -File test -Target ./App -Run -Force"
+
+    Write-Host "  Windows PowerShell:"
+    Write-Host "    .\FileForge.ps1 -File test -Target `".\App`" -Run -Force"
+
+    Write-Host ""
+
+    Write-Host "Execute with force and actions:"
+
+    Write-Host "  Linux / macOS / WSL:"
+    Write-Host "    pwsh ./FileForge.ps1 -File test -Target ./App -Run -Force -ShowActions"
+
+    Write-Host "  Windows PowerShell:"
+    Write-Host "    .\FileForge.ps1 -File test -Target `".\App`" -Run -Force -ShowActions"
+
     Write-Host ""
 
     exit 0
 
 }
-
 
 #
 # Load template system

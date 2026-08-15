@@ -53,9 +53,8 @@ function Test-ForgeTree {
     # Invalid target paths
     #
     foreach ($node in $Nodes) {
-
-        if ($node.FullPath -match '[<>:"|?*]') {
-
+        
+        if ($node.Name -match '[<>:"|?*]') {
             $errors.Add(
                 "Invalid filesystem characters: $($node.FullPath)"
             )
