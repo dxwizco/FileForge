@@ -11,18 +11,83 @@ The format is based on:
 
 # [Unreleased]
 
-## Added
-
-- Initial roadmap for future improvements.
-- Community contribution support.
-
 ## Planned
 
-- Preview mode (`--what-if`)
 - Custom template variables
 - Additional template engines
 - More built-in project profiles
 - Interactive project creation wizard
+
+---
+
+# [2.0.0] - 2026-08-15
+
+## Added
+
+### Markdown Definitions
+
+- Added Markdown-based FileForge definition files using `.md`.
+- Added support for fenced `fileforge` definition blocks.
+- Only the first `fileforge` block is processed.
+- Markdown files can contain normal documentation alongside the definition block.
+- Added support for comments inside definition blocks.
+- Added support for nested folder structures using indentation.
+- Added support for single-line folder/file paths.
+- Added support for special folder names such as `[dynamic-route]` and `(group)`.
+- Added support for duplicate path detection.
+
+### Preview and Execution
+
+- Added preview mode as the default behavior.
+- Added `-Run` execution mode.
+- Added `-ShowActions` for detailed operation reporting.
+- Added `-Force` for replacing existing files.
+- Added detailed create/update/skip reporting.
+
+### Project Tree Rendering
+
+- Added explorer-style project tree output.
+- Added sorted folder and file rendering.
+- Added visual indicators for planned and executed actions.
+
+### Templates
+
+- Expanded extension-based template support.
+- Added templates for additional file types including:
+  - C#
+  - Go
+  - Rust
+  - Vue
+  - SCSS
+  - YAML
+  - YML
+  - ENV
+  - Shell
+  - Docker
+  - Docker Compose
+  - Git ignore files
+
+### Documentation
+
+- Updated README with complete Markdown definition documentation.
+- Added command usage examples for Windows, Linux, macOS and WSL.
+- Added examples for preview, execution, force and action-reporting modes.
+- Added documentation for running FileForge from any location.
+- Added `test.md` as a simple example definition.
+
+## Changed
+
+- Definition files changed from `.txt` to `.md`.
+- FileForge now reads project definitions from Markdown files.
+- Updated command documentation and examples.
+- Improved output rendering and execution summaries.
+
+## Fixed
+
+- Fixed dynamic route handling.
+- Fixed nested folder rendering.
+- Fixed path handling for special folder names.
+- Improved duplicate path detection.
 
 ---
 
