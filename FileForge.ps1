@@ -4,7 +4,7 @@ param(
     [string]$Target = ".",
 
     [Parameter(Mandatory=$false)]
-    [string]$File = "test",
+    [string]$File,
 
     [Parameter(Mandatory=$false)]
     [switch]$Run,
@@ -31,6 +31,231 @@ $Root = $PSScriptRoot
 $FileForgeVersion = "2.0.0"
 
 $Source = Join-Path $Root "src"
+
+function Resolve-ForgeDefinition {
+
+    param(
+        [Parameter(Mandatory=$false)]
+        [AllowEmptyString()]
+        [string]$File,
+
+        [Parameter(Mandatory)]
+        [string]$FileForgeRoot
+    )
+
+    # ============================================================
+    # No -File supplied
+    # ============================================================
+    #
+    # Only in this situation do we use the built-in FileForge
+    # fallback definition.
+    #
+    # Default: <FileForge>/files/test.md
+    
+    if ([string]::IsNullOrWhiteSpace($File)) {
+
+        $defaultDefinition = Join-Path `
+            $FileForgeRoot `
+            "files/test.md"
+
+
+        if (!(Test-Path -LiteralPath $defaultDefinition -PathType Leaf)) {
+
+            throw @"
+Default FileForge definition was not found.
+
+Expected:
+$defaultDefinition
+
+Please provide a definition using:
+-File <path-or-name>
+"@
+
+        }
+
+        return [System.IO.Path]::GetFullPath(
+            (Resolve-Path -LiteralPath $defaultDefinition).Path
+        )
+
+    }
+
+
+    # ============================================================
+    # -File was explicitly supplied
+    # ============================================================
+    #
+    # From this point onward, NEVER fall back to: <FileForge>/files/<name>.md
+    #
+    # The user explicitly selected a definition, so we must use
+    # exactly what they specified or report an error.
+    #
+
+    $originalFile = $File
+
+    #
+    # Add .md when the supplied name/path has no extension.
+    #
+    $extension = [System.IO.Path]::GetExtension($File)
+
+    if ([string]::IsNullOrWhiteSpace($extension)) {
+
+        $File = "$File.md"
+
+    }
+
+
+    #
+    # ============================================================
+    # Absolute path
+    # ============================================================
+    #
+    if ([System.IO.Path]::IsPathRooted($File)) {
+
+        $resolvedPath = [System.IO.Path]::GetFullPath($File)
+
+
+        if (!(Test-Path -LiteralPath $resolvedPath -PathType Leaf)) {
+
+            throw @"
+Specified definition file was not found.
+
+Specified:
+$originalFile
+
+Resolved path:
+$resolvedPath
+
+Please verify that the file exists and that the path is correct.
+"@
+
+        }
+
+        return [System.IO.Path]::GetFullPath(
+            (Resolve-Path -LiteralPath $resolvedPath).Path
+        )
+
+    }
+
+#
+# ============================================================
+# Relative path OR definition name
+# ============================================================
+#
+
+$currentDirectory = (Get-Location).Path
+
+
+#
+# Explicit relative path
+#
+# Examples:
+#
+#   .\definitions\backend.md
+#   ./definitions/backend.md
+#   ..\SharedDefinitions\backend.md
+#   ../SharedDefinitions/backend.md
+#
+# These are always resolved relative to the current directory.
+#
+
+$isExplicitRelativePath =
+    $File.StartsWith(".\") -or
+    $File.StartsWith("./") -or
+    $File.StartsWith("..\") -or
+    $File.StartsWith("../") -or
+    $File.Contains("\") -or
+    $File.Contains("/")
+
+
+if ($isExplicitRelativePath) {
+
+    $resolvedPath = [System.IO.Path]::GetFullPath(
+        (Join-Path $currentDirectory $File)
+    )
+
+
+    if (!(Test-Path -LiteralPath $resolvedPath -PathType Leaf)) {
+
+        throw @"
+Specified definition file was not found.
+
+Specified:
+$originalFile
+
+Resolved path:
+$resolvedPath
+
+Current directory:
+$currentDirectory
+
+Please verify that the file exists and that the path is correct.
+"@
+
+    }
+
+    return [System.IO.Path]::GetFullPath(
+        (Resolve-Path -LiteralPath $resolvedPath).Path
+    )
+
+}
+
+
+#
+# ============================================================
+# Definition name
+# ============================================================
+#
+# Examples:
+#   -File test
+#   -File test.md
+#
+# Definition names use FileForge's built-in files directory.
+#
+# IMPORTANT:
+# If the definition does not exist there, we report an error.
+# We do NOT silently choose another definition.
+#
+
+$definitionName = $File
+
+
+if ([string]::IsNullOrWhiteSpace(
+    [System.IO.Path]::GetExtension($definitionName)
+)) {
+
+    $definitionName = "$definitionName.md"
+
+}
+
+
+$definitionPath = Join-Path `
+    $FileForgeRoot `
+    "files/$definitionName"
+
+
+if (!(Test-Path -LiteralPath $definitionPath -PathType Leaf)) {
+
+    throw @"
+FileForge definition was not found.
+
+Specified definition:
+$originalFile
+
+Expected location:
+$definitionPath
+
+Please verify that the definition name is correct or provide an explicit path.
+"@
+
+}
+
+
+return [System.IO.Path]::GetFullPath(
+    (Resolve-Path -LiteralPath $definitionPath).Path
+)
+
+}
+
 
 if ($Version) {
 
@@ -104,6 +329,7 @@ if ($Help) {
     Write-Host ""
 
     Write-Host "Options:"
+    Write-Host "  -File          Definition name or path"
     Write-Host "  -ShowActions   Show detailed create/update/skip actions"
     Write-Host "  -Force         Replace existing files during execution"
     Write-Host "  -List          List available FileForge definition files"
@@ -186,6 +412,31 @@ if ($Help) {
 
     Write-Host ""
 
+    
+    Write-Host "External definition:"
+    Write-Host ""
+
+    Write-Host "  Linux / macOS / WSL:"
+    Write-Host '    pwsh "/path/to/FileForge/FileForge.ps1" -File "/path/to/definitions/backend.md" -Target "/path/to/project"'
+
+    Write-Host ""
+    Write-Host "  Windows PowerShell:"
+    Write-Host '    & "D:\Tools\FileForge\FileForge.ps1" -File "D:\ProjectDefinitions\backend.md" -Target "D:\Projects\ProjectX"'
+
+    Write-Host ""
+
+    Write-Host "Definition relative to current directory:"
+    Write-Host ""
+
+    Write-Host "  Linux / macOS / WSL:"
+    Write-Host '    pwsh "/path/to/FileForge/FileForge.ps1" -File "./definitions/backend.md" -Target "."'
+
+    Write-Host ""
+    Write-Host "  Windows PowerShell:"
+    Write-Host '    & "D:\Tools\FileForge\FileForge.ps1" -File ".\definitions\backend.md" -Target "."'
+
+    Write-Host ""
+
     exit 0
 
 }
@@ -195,7 +446,6 @@ if ($Help) {
 #
 
 . (Join-Path $Source "Templates.ps1")
-
 
 
 #
@@ -224,13 +474,21 @@ $Target = [System.IO.Path]::GetFullPath($Target)
 # Load markdown definition
 #
 
-$filePath = Join-Path $Root "files/$File.md"
+try {
 
+    $filePath = Resolve-ForgeDefinition `
+        -File $File `
+        -FileForgeRoot $Root
 
+}
+catch {
 
-if (!(Test-Path -LiteralPath $filePath)) {
+    Write-Host ""
+    Write-Host "❌ Definition error" -ForegroundColor Red
+    Write-Host ""
+    Write-Host $_.Exception.Message -ForegroundColor Yellow
+    Write-Host ""
 
-    Write-Host "❌ File definition not found: $filePath" -ForegroundColor Red
     exit 1
 
 }
@@ -273,13 +531,11 @@ if (!$validation.Valid) {
     Write-Host ""
     Write-Host "❌ Validation failed" -ForegroundColor Red
 
-
     foreach ($error in $validation.Errors) {
 
         Write-Host "   $error" -ForegroundColor DarkRed
 
     }
-
 
     exit 1
 }

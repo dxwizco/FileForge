@@ -20,30 +20,6 @@ function Get-CommentHeader {
 
     # 1. First, check standard, explicitly styled extensions
 
-    # switch ($Extension.ToLower()) {
-    #     ".ts"   { return "// $Path" }
-    #     ".tsx"  { return "// $Path" }
-    #     ".js"   { return "// $Path" }
-    #     ".jsx"  { return "// $Path" }
-    #     ".css"  { return "/* $Path */" }
-    #     ".scss" { return "/* $Path */" }
-    #     ".html" { return "<!-- $Path -->" }
-    #     ".py"   { return "# $Path" }
-    #     ".sql"  { return "-- $Path" }
-    #     ".ps1"  { return "# $Path" }
-    #     ".sh"   { return "#!/bin/bash`r`n# $Path" } # Shell scripts get their shebang
-    #     ".yml"  { return "# $Path" }
-    #     ".yaml" { return "# $Path" }
-    #     ".env"  { return "# $Path" }
-    #     ".md"   { return "<!-- $Path -->" }
-    #     # --- NEW LANGUAGES ADDED HERE ---
-    #     ".cs"   { return "// $Path" }
-    #     ".go"   { return "// $Path" }
-    #     ".rs"   { return "// $Path" }
-    #     ".vue"  { return "<!-- $Path -->" }
-    #     default { return "" } # Default covers extensionless files like Dockerfile cleanly
-    # }
-
     switch ($extLower) {
         ".ts"   { return "// $Path" }
         ".tsx"  { return "// $Path" }

@@ -119,7 +119,9 @@ FileForge then:
 
 # 📄 FileForge Definitions
 
-Definitions are stored inside:
+FileForge definitions are Markdown files containing a `fileforge` fenced code block.
+
+Built-in definitions are stored inside:
 
 ```text
 files/
@@ -129,6 +131,7 @@ For example:
 
 ```text
 files/test.md
+files/todo.md
 ```
 
 Unlike the older `.txt` format, FileForge definitions are now Markdown files.
@@ -143,7 +146,616 @@ This allows you to keep:
 
 all inside one file.
 
+# 📍 Definition Selection & Path Scenarios
+
+FileForge supports definitions located either inside the FileForge repository or anywhere else on the filesystem.
+
+The location from which `FileForge.ps1` is launched does not determine where the definition or target must be located.
+
+The following three paths are handled independently:
+
+```text
+Current working directory
+          │
+          ├── FileForge script location
+          │
+          ├── Definition path (-File)
+          │
+          └── Target path (-Target)
+```
+
+This allows FileForge to be launched from any directory while using either built-in or external definitions and generating into either an internal or external target.
+
 ---
+
+## Case 1 — No `-File`
+
+When `-File` is omitted, FileForge uses the default definition:
+
+```text
+files/test.md
+```
+
+Run from the FileForge directory:
+
+### Windows PowerShell
+
+```powershell
+.\FileForge.ps1 -Target ".\Project"
+```
+
+### Linux / macOS / WSL
+
+```bash
+pwsh ./FileForge.ps1 -Target "./Project"
+```
+
+The definition resolves to:
+
+```text
+D:\WIP-DOC\FileForge\files\test.md
+```
+
+on the example Windows installation.
+
+Expected output includes:
+
+```text
+Definition:
+ D:\WIP-DOC\FileForge\files\test.md
+
+Target:
+ D:\WIP-DOC\FileForge\Project
+```
+
+The exact paths depend on where FileForge is installed.
+
+---
+
+## Case 2 — Built-in Definition by Name
+
+A definition can be selected by its name.
+
+For example:
+
+### Windows PowerShell
+
+```powershell
+.\FileForge.ps1 -File "test" -Target ".\Project"
+```
+
+### Linux / macOS / WSL
+
+```bash
+pwsh ./FileForge.ps1 -File "test" -Target "./Project"
+```
+
+FileForge resolves:
+
+```text
+test
+```
+
+to:
+
+```text
+files/test.md
+```
+
+For example:
+
+```text
+D:\WIP-DOC\FileForge\files\test.md
+```
+
+Expected output:
+
+```text
+Definition:
+ D:\WIP-DOC\FileForge\files\test.md
+
+Target:
+ D:\WIP-DOC\FileForge\Project
+```
+
+---
+
+## Case 3 — Built-in Definition With `.md` Extension
+
+The built-in definition can also be specified with its extension.
+
+### Windows PowerShell
+
+```powershell
+.\FileForge.ps1 -File "test.md" -Target ".\Project"
+```
+
+### Linux / macOS / WSL
+
+```bash
+pwsh ./FileForge.ps1 -File "test.md" -Target "./Project"
+```
+
+This resolves to the same definition:
+
+```text
+files/test.md
+```
+
+For example:
+
+```text
+D:\WIP-DOC\FileForge\files\test.md
+```
+
+Therefore these two commands select the same definition:
+
+```powershell
+.\FileForge.ps1 -File "test" -Target ".\Project"
+
+.\FileForge.ps1 -File "test.md" -Target ".\Project"
+```
+
+---
+
+## Case 4 — External Absolute Definition
+
+A definition can be stored completely outside the FileForge repository.
+
+Example:
+
+```text
+D:\ProjectDefinitions\backend.md
+```
+
+### Windows PowerShell
+
+```powershell
+.\FileForge.ps1 `
+    -File "D:\ProjectDefinitions\backend.md" `
+    -Target "D:\Projects\ProjectX"
+```
+
+Or on one line:
+
+```powershell
+.\FileForge.ps1 -File "D:\ProjectDefinitions\backend.md" -Target "D:\Projects\ProjectX"
+```
+
+### Linux / macOS / WSL
+
+```bash
+pwsh ./FileForge.ps1 \
+    -File "/home/user/ProjectDefinitions/backend.md" \
+    -Target "/home/user/Projects/ProjectX"
+```
+
+FileForge uses the specified external definition directly.
+
+It does **not** search:
+
+```text
+files/backend.md
+```
+
+when an explicit external path was provided.
+
+Expected output:
+
+```text
+Definition:
+ D:\ProjectDefinitions\backend.md
+
+Target:
+ D:\Projects\ProjectX
+```
+
+---
+
+## Case 5 — External Relative Definition
+
+A definition can also be specified using a relative path.
+
+For example, suppose the current directory is:
+
+```text
+D:\Projects\ProjectX
+```
+
+and the definition is:
+
+```text
+D:\Projects\ProjectX\definitions\backend.md
+```
+
+### Windows PowerShell
+
+```powershell
+& "D:\WIP-DOC\FileForge\FileForge.ps1" `
+    -File ".\definitions\backend.md" `
+    -Target "."
+```
+
+Or:
+
+```powershell
+& "D:\WIP-DOC\FileForge\FileForge.ps1" -File ".\definitions\backend.md" -Target "."
+```
+
+### Linux / macOS / WSL
+
+```bash
+pwsh "/home/user/FileForge/FileForge.ps1" \
+    -File "./definitions/backend.md" \
+    -Target "."
+```
+
+The relative definition path is resolved from the **current working directory**, not from the FileForge installation directory.
+
+For the Windows example:
+
+```text
+Current directory:
+D:\Projects\ProjectX
+
+Specified:
+.\definitions\backend.md
+
+Resolved:
+D:\Projects\ProjectX\definitions\backend.md
+```
+
+---
+
+## Case 6 — FileForge Launched From Outside Its Directory
+
+FileForge can be launched from any working directory.
+
+For example, suppose:
+
+```text
+FileForge:
+D:\WIP-DOC\FileForge\FileForge.ps1
+
+Current directory:
+D:\WIP-DOC\TestFolder
+```
+
+Run:
+
+### Windows PowerShell
+
+```powershell
+& "D:\WIP-DOC\FileForge\FileForge.ps1" `
+    -File "test" `
+    -Target "D:\WIP-DOC\FileForge\Project"
+```
+
+The current directory does not change how the built-in definition is located.
+
+FileForge still uses:
+
+```text
+D:\WIP-DOC\FileForge\files\test.md
+```
+
+and generates into:
+
+```text
+D:\WIP-DOC\FileForge\Project
+```
+
+Expected:
+
+```text
+Definition:
+ D:\WIP-DOC\FileForge\files\test.md
+
+Target:
+ D:\WIP-DOC\FileForge\Project
+```
+
+---
+
+## Case 7 — External Definition + External Target
+
+FileForge can be launched from one directory while both the definition and target are somewhere else.
+
+Example:
+
+```text
+FileForge:
+D:\WIP-DOC\FileForge\FileForge.ps1
+
+Definition:
+D:\WIP-DOC\TestFolder\remote.md
+
+Target:
+D:\Projects\ProjectX
+
+Current directory:
+D:\WIP-DOC\TestFolder
+```
+
+Run:
+
+### Windows PowerShell
+
+```powershell
+& "D:\WIP-DOC\FileForge\FileForge.ps1" `
+    -File "D:\WIP-DOC\TestFolder\remote.md" `
+    -Target "D:\Projects\ProjectX"
+```
+
+Or one line:
+
+```powershell
+& "D:\WIP-DOC\FileForge\FileForge.ps1" -File "D:\WIP-DOC\TestFolder\remote.md" -Target "D:\Projects\ProjectX"
+```
+
+### Linux / macOS / WSL
+
+```bash
+pwsh "/home/user/FileForge/FileForge.ps1" \
+    -File "/home/user/TestFolder/remote.md" \
+    -Target "/home/user/Projects/ProjectX"
+```
+
+Expected:
+
+```text
+Definition:
+ D:\WIP-DOC\TestFolder\remote.md
+
+Target:
+ D:\Projects\ProjectX
+```
+
+This is the fully external scenario:
+
+```text
+FileForge installation   → one location
+Definition               → another location
+Target                   → another location
+Current directory        → can be another location again
+```
+
+---
+
+## Case 8 — External Definition + Target Inside FileForge
+
+The definition and target do not have to be on the same side of the FileForge installation.
+
+For example:
+
+```text
+FileForge:
+D:\WIP-DOC\FileForge\FileForge.ps1
+
+Definition:
+D:\WIP-DOC\TestFolder\remote.md
+
+Target:
+D:\WIP-DOC\FileForge\Project
+```
+
+Run:
+
+### Windows PowerShell
+
+```powershell
+& "D:\WIP-DOC\FileForge\FileForge.ps1" `
+    -File "D:\WIP-DOC\TestFolder\remote.md" `
+    -Target "D:\WIP-DOC\FileForge\Project"
+```
+
+### Linux / macOS / WSL
+
+```bash
+pwsh "/home/user/FileForge/FileForge.ps1" \
+    -File "/home/user/TestFolder/remote.md" \
+    -Target "/home/user/FileForge/Project"
+```
+
+The important point is that `-File` and `-Target` are resolved independently.
+
+---
+
+# 📊 Complete Path Scenario Matrix
+
+The following scenarios cover the supported combinations of FileForge location, definition location, target location, and current working directory.
+
+| Case | FileForge launched from | Definition | Target            | Result |
+| ---- | ----------------------- | ---------- | ----------------- | ------ |
+| 1    | Inside FileForge        | Built-in   | Inside FileForge  | ✅     |
+| 2    | Inside FileForge        | Built-in   | Outside FileForge | ✅     |
+| 3    | Inside FileForge        | External   | Outside FileForge | ✅     |
+| 4    | Outside FileForge       | Built-in   | Inside FileForge  | ✅     |
+| 5    | Outside FileForge       | Built-in   | Outside FileForge | ✅     |
+| 6    | Outside FileForge       | External   | Outside FileForge | ✅     |
+| 7    | Outside FileForge       | External   | Inside FileForge  | ✅     |
+
+The important behavior is:
+
+```text
+Built-in definition
+        │
+        └── resolved relative to FileForge
+
+Explicit absolute definition
+        │
+        └── used directly
+
+Explicit relative definition
+        │
+        └── resolved relative to the current working directory
+
+Target
+        │
+        └── resolved independently from the definition
+```
+
+---
+
+# ❌ Missing Definition Behavior
+
+FileForge must not silently fall back to another definition when the requested definition cannot be found.
+
+For example:
+
+### Windows PowerShell
+
+```powershell
+.\FileForge.ps1 -File "doesnotexist" -Target ".\Project"
+```
+
+### Linux / macOS / WSL
+
+```bash
+pwsh ./FileForge.ps1 -File "doesnotexist" -Target "./Project"
+```
+
+Expected behavior:
+
+```text
+❌ Definition error
+
+FileForge definition was not found.
+
+Specified definition:
+doesnotexist
+
+Expected location:
+D:\WIP-DOC\FileForge\files\doesnotexist.md
+
+Please verify that the definition name is correct or provide an explicit path.
+```
+
+FileForge must **not** silently fall back to:
+
+```text
+files/test.md
+```
+
+when:
+
+```text
+doesnotexist
+```
+
+was explicitly requested.
+
+---
+
+# ❌ Missing External Definition
+
+The same rule applies to explicit paths.
+
+For example:
+
+```powershell
+.\FileForge.ps1 `
+    -File "D:\ProjectDefinitions\backend.md" `
+    -Target "D:\Projects\ProjectX"
+```
+
+If the file does not exist, FileForge reports a definition error.
+
+It must not attempt to replace the requested file with another definition from:
+
+```text
+files/
+```
+
+Example:
+
+```text
+❌ Definition error
+
+Specified definition file was not found.
+
+Specified:
+D:\ProjectDefinitions\backend.md
+
+Resolved path:
+D:\ProjectDefinitions\backend.md
+
+Please verify that the file exists and that the path is correct.
+```
+
+---
+
+# 🧪 Recommended Path Testing
+
+When testing changes to FileForge's definition resolution, test these commands independently.
+
+### 1. Default definition
+
+```powershell
+.\FileForge.ps1 -Target ".\Project"
+```
+
+### 2. Built-in definition by name
+
+```powershell
+.\FileForge.ps1 -File "test" -Target ".\Project"
+```
+
+### 3. Built-in definition with extension
+
+```powershell
+.\FileForge.ps1 -File "test.md" -Target ".\Project"
+```
+
+### 4. Missing built-in definition
+
+```powershell
+.\FileForge.ps1 -File "doesnotexist" -Target ".\Project"
+```
+
+### 5. External absolute definition
+
+```powershell
+.\FileForge.ps1 `
+    -File "D:\ProjectDefinitions\backend.md" `
+    -Target "D:\Projects\ProjectX"
+```
+
+### 6. External relative definition
+
+From the directory containing the definition:
+
+```powershell
+& "D:\WIP-DOC\FileForge\FileForge.ps1" `
+    -File ".\definitions\backend.md" `
+    -Target "."
+```
+
+### 7. FileForge launched from outside its directory
+
+```powershell
+& "D:\WIP-DOC\FileForge\FileForge.ps1" `
+    -File "test" `
+    -Target "D:\Projects\ProjectX"
+```
+
+### 8. External definition + target inside FileForge
+
+```powershell
+& "D:\WIP-DOC\FileForge\FileForge.ps1" `
+    -File "D:\WIP-DOC\TestFolder\remote.md" `
+    -Target "D:\WIP-DOC\FileForge\Project"
+```
+
+For Linux / macOS / WSL, use the equivalent `pwsh` commands with POSIX paths:
+
+```bash
+pwsh "/path/to/FileForge/FileForge.ps1" \
+    -File "/path/to/definitions/backend.md" \
+    -Target "/path/to/Projects/ProjectX"
+```
+
+These tests verify that **definition selection and target selection remain independent of the current working directory and the FileForge installation directory**.
 
 # 🧩 The `fileforge` Definition Block
 
@@ -459,6 +1071,21 @@ Preview does not create or modify files.
 
 It displays the planned project structure.
 
+The `-File` value can be:
+
+- a built-in definition name such as `test`
+- a built-in definition name with `.md`, such as `test.md`
+- an explicit relative path such as `.\definitions\backend.md`
+- an explicit absolute path such as `D:\Definitions\backend.md`
+
+If `-File` is omitted entirely, FileForge uses the built-in:
+
+```text
+files/test.md
+```
+
+Explicit paths must exist and are never replaced by a fallback definition.
+
 ---
 
 ## Preview With Actions
@@ -489,6 +1116,44 @@ pwsh ./FileForge.ps1 -File test -Target ./xxx -Run
 ```
 
 Existing files are skipped by default.
+
+---
+
+## Using an External Definition
+
+FileForge can use a Markdown definition outside the built-in `files/` directory.
+
+### Absolute Path
+
+Windows:
+
+```powershell
+& "D:\Tools\FileForge\FileForge.ps1" `
+    -File "D:\ProjectDefinitions\backend.md" `
+    -Target "D:\Projects\ProjectX"
+```
+
+Linux / macOS / WSL:
+
+```bash
+pwsh "/home/user/Tools/FileForge/FileForge.ps1" \
+    -File "/home/user/ProjectDefinitions/backend.md" \
+    -Target "/home/user/Projects/ProjectX"
+```
+
+### Relative Path
+
+```powershell
+.\FileForge.ps1 `
+    -File ".\definitions\backend.md" `
+    -Target ".\Project"
+```
+
+Relative definition paths are resolved from the current working directory.
+
+If the specified external definition does not exist, FileForge stops with a definition error.
+
+It does not fall back to `files/test.md`.
 
 ---
 
@@ -598,10 +1263,10 @@ pwsh "/home/user/Tools/FileForge/FileForge.ps1" -File test -Target "/home/user/P
 
 ## Main Parameters
 
-| Parameter | Description                                          |
-| --------- | ---------------------------------------------------- |
-| `-File`   | Selects the definition from the `files` directory.   |
-| `-Target` | Defines where the generated project will be created. |
+| Parameter | Description                                                                            |
+| --------- | -------------------------------------------------------------------------------------- |
+| `-File`   | Selects a built-in definition by name or an explicit Markdown definition file by path. |
+| `-Target` | Defines where the generated project will be created.                                   |
 
 Example:
 
@@ -609,11 +1274,37 @@ Example:
 -File test
 ```
 
-uses:
+uses the built-in definition:
 
 ```text
 files/test.md
 ```
+
+The `.md` extension can also be specified:
+
+```bash
+-File test.md
+```
+
+Both forms resolve to:
+
+```text
+files/test.md
+```
+
+An external definition can be supplied using an absolute path:
+
+```powershell
+-File "D:\ProjectDefinitions\backend.md"
+```
+
+or a relative path:
+
+```powershell
+-File ".\definitions\backend.md"
+```
+
+Explicit paths must exist. FileForge does not fall back to a built-in definition when an explicitly supplied path is missing.
 
 Example:
 
@@ -1050,6 +1741,60 @@ not:
 ```text
 files/test.txt
 ```
+
+---
+
+## Assuming `-File` always searches `files/`
+
+A plain definition name searches FileForge's built-in definitions:
+
+```powershell
+-File "test"
+```
+
+This resolves to:
+
+```text
+<FileForge>/files/test.md
+```
+
+However, an explicit path is treated as an actual file path:
+
+```powershell
+-File ".\definitions\backend.md"
+```
+
+or:
+
+```powershell
+-File "D:\Definitions\backend.md"
+```
+
+If the explicit path does not exist, FileForge reports an error.
+
+It does not automatically search:
+
+```text
+files/
+```
+
+as a fallback.
+
+This prevents accidental execution of the wrong definition because of a misspelled path.
+
+For example:
+
+```powershell
+-File "D:\Definitions\backed.md"
+```
+
+does not fall back to:
+
+```text
+files/test.md
+```
+
+Instead, FileForge reports that the specified definition file was not found.
 
 ---
 
